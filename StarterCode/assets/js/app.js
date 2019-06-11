@@ -33,10 +33,21 @@ d3.csv('../data/data.csv')
 
         var circs=group.selectAll('circle').data(povdata).enter().append('circle')
             .attr('circx',d=>xLinearScale(d.income)).attr('circy',d=>yLinearScale(d.smokes))
-            .attr('r','10').attr('fill','blue');
+            .attr('r','10').attr('fill','grey');
         
         var toolTip=d3.tip().attr('class','tooltip').offset([80,-60]).html(function(d) {
             return(`${d.abbr}<br>Income: $${d.income}<br>Smokers: ${d.smokes}%`);
         });
-    
-    })
+
+    group.call(toolTip);
+    circs.on('click',function(data) {
+        toolTip.show(data,this);
+    }).on('mouseout',function(data,index) {
+        toolTip.hide(data);
+    });
+
+    group.append('text').attr('transform','rotate(-90)').attr('y').attr('x')
+        .attr('dy','1em').attr('class','axisText').text('Percentage of Smokers');
+    group.append('text').attr('transform',`translate(${width/2},${height+75})`)
+        .attr('class','axisText').text('Average Household Income');
+    });
